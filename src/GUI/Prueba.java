@@ -1,7 +1,17 @@
 
 package GUI;
 
-import Procesos.Metodos;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+import org.hyperic.sigar.CpuInfo;
+import org.hyperic.sigar.NetInfo;
+import org.hyperic.sigar.NetInterfaceConfig;
+import org.hyperic.sigar.OperatingSystem;
+import org.hyperic.sigar.Sigar;
+import org.hyperic.sigar.SigarException;
 
 /**
  *
@@ -9,11 +19,133 @@ import Procesos.Metodos;
  */
 public class Prueba extends javax.swing.JFrame {
 
-    Metodos mt = new Metodos();
+    OperatingSystem so;
+    Sigar s;
+    NetInterfaceConfig net;
+    NetInfo info;
+    
+    DefaultListModel mol1;
+    DefaultListModel mol2;
+    DefaultListModel mol3;
+    DefaultListModel mol4;
+        
     
     public Prueba() {
         initComponents();
         setLocationRelativeTo(null);
+        
+        so = OperatingSystem.getInstance();
+        s = new Sigar();
+        try {
+            net = s.getNetInterfaceConfig(null);
+            info = s.getNetInfo();
+        } catch (SigarException ex) {
+            Logger.getLogger(Prueba.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        mol1 = new DefaultListModel();
+        mol2 = new DefaultListModel();
+        mol3 = new DefaultListModel();
+        mol4 = new DefaultListModel();
+        
+//        informacion SO
+        for(int i=0; i < infoSO().size(); i += 2){
+            mol1.addElement(infoSO().get(i)+"  "+infoSO().get(i+1));
+        }
+        lista1.setModel(mol1);
+        
+//        informacion CPU
+        for(int i=0; i < infoCPU().size(); i += 2){
+            mol2.addElement(infoCPU().get(i)+"  "+infoCPU().get(i+1));
+        }
+        lista2.setModel(mol2);
+        
+//        informacion Disco
+        for(int i=0; i < infoDisco().size(); i += 2){
+            mol3.addElement(infoDisco().get(i)+"  "+infoDisco().get(i+1));
+        }
+        lista3.setModel(mol3);
+        
+//        informacion Red
+        for(int i=0; i < infoRed().size(); i += 2){
+            mol4.addElement(infoRed().get(i)+"  "+infoRed().get(i+1));
+        }
+        lista4.setModel(mol4);
+    }
+       
+    public ArrayList<String> infoSO(){
+        ArrayList<String> datos=new ArrayList();
+        datos.add("Descripcion: ");
+        datos.add(so.getDescription());
+        datos.add("Nombre: ");
+        datos.add(so.getVendorName());
+        datos.add("Version: ");
+        datos.add(so.getVersion());
+        datos.add("Arquitectura: ");
+        datos.add(so.getArch());
+        datos.add("Usuario: ");
+        datos.add(System.getProperty("user.name"));
+        datos.add("Directorio del Usuario: ");
+        datos.add(System.getProperty("user.home"));
+        return datos;
+    }
+
+    public ArrayList<String> infoCPU(){
+        ArrayList<String> datos=new ArrayList();
+        try {
+         CpuInfo cpu[]=s.getCpuInfoList();
+         CpuInfo data=cpu[0];
+         datos.add("Vendedor: ");
+         datos.add(data.getVendor());
+         datos.add("Modelo: ");
+         datos.add(data.getModel());
+         datos.add("Mhz: ");
+         datos.add(""+data.getMhz());
+         if(data.getCacheSize()!=Sigar.FIELD_NOTIMPL){
+          datos.add("Tamaño de Cache: ");
+          datos.add(""+data.getCacheSize());
+         }
+         if ((data.getTotalCores() != data.getTotalSockets()) || (data.getCoresPerSocket() > data.getTotalCores())) {
+          datos.add("CPU´s Fisicas: ");
+          datos.add(""+data.getTotalSockets());
+          datos.add("Nucleos por CPU: ");
+          datos.add(""+data.getCoresPerSocket());
+         }
+
+        } catch (SigarException e) {
+        }
+        return datos;
+    }
+
+    public ArrayList<String> infoDisco(){
+        File file = new File( System.getProperty("user.dir") ); 
+        Long total = file.getTotalSpace();
+        Long libre = file.getFreeSpace();
+        Long usado = total - libre;
+        ArrayList<String> datos=new ArrayList();
+        datos.add("Espacio Total: ");
+        datos.add(total.toString());
+        datos.add("Espacio Libre: ");
+        datos.add(libre.toString());
+        datos.add("Espacio Usado: ");
+        datos.add(usado.toString());
+        datos.add("Unidades: ");
+        File drives[] = File.listRoots(); 
+        for (File drive : drives) {
+            datos.add(drive.toString());
+        }
+        return datos;
+    }
+
+     public ArrayList<String> infoRed(){
+        ArrayList<String> datos=new ArrayList();
+        datos.add("IP primaria: ");
+        datos.add(net.getAddress());
+        datos.add("Mac primaria: ");
+        datos.add(net.getHwaddr());
+        datos.add("Host: ");
+        datos.add(info.getHostName());
+        return datos; 
     }
 
     @SuppressWarnings("unchecked")
@@ -22,13 +154,12 @@ public class Prueba extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        jPanel7 = new javax.swing.JPanel();
-        txt_nombreanimal = new javax.swing.JTextField();
-        txt_idanimal = new javax.swing.JTextField();
-        txt_nombreRespon = new javax.swing.JTextField();
-        jPanel9 = new javax.swing.JPanel();
+        lista1 = new javax.swing.JList();
+        lista2 = new javax.swing.JList();
+        lista3 = new javax.swing.JList();
+        lista4 = new javax.swing.JList();
         titulo = new javax.swing.JLabel();
-        conf = new javax.swing.JButton();
+        imp = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -37,88 +168,48 @@ public class Prueba extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(204, 204, 204));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel7.setBackground(new java.awt.Color(204, 204, 204));
-        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)), "Propiedades", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.ABOVE_TOP, new java.awt.Font("Tahoma", 0, 24), new java.awt.Color(102, 102, 102))); // NOI18N
+        lista1.setBackground(new java.awt.Color(204, 204, 204));
+        lista1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)), "Sistema Operativo", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.ABOVE_TOP, new java.awt.Font("Tahoma", 0, 24), new java.awt.Color(102, 102, 102))); // NOI18N
+        lista1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        lista1.setToolTipText("");
+        jPanel2.add(lista1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 20, 390, 190));
 
-        txt_nombreanimal.setBackground(new java.awt.Color(204, 204, 204));
-        txt_nombreanimal.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        txt_nombreanimal.setForeground(new java.awt.Color(51, 51, 51));
-        txt_nombreanimal.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txt_nombreanimal.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)), "", javax.swing.border.TitledBorder.RIGHT, javax.swing.border.TitledBorder.ABOVE_BOTTOM, new java.awt.Font("Tahoma", 1, 11), new java.awt.Color(102, 102, 102))); // NOI18N
+        lista2.setBackground(new java.awt.Color(204, 204, 204));
+        lista2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)), "CPU", javax.swing.border.TitledBorder.RIGHT, javax.swing.border.TitledBorder.ABOVE_TOP, new java.awt.Font("Tahoma", 0, 24), new java.awt.Color(102, 102, 102))); // NOI18N
+        lista2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        lista2.setToolTipText("");
+        jPanel2.add(lista2, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 20, 390, 190));
 
-        txt_idanimal.setBackground(new java.awt.Color(204, 204, 204));
-        txt_idanimal.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        txt_idanimal.setForeground(new java.awt.Color(51, 51, 51));
-        txt_idanimal.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txt_idanimal.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)), "", javax.swing.border.TitledBorder.RIGHT, javax.swing.border.TitledBorder.ABOVE_BOTTOM, new java.awt.Font("Tahoma", 1, 11), new java.awt.Color(102, 102, 102))); // NOI18N
+        lista3.setBackground(new java.awt.Color(204, 204, 204));
+        lista3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)), "Disco", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.ABOVE_TOP, new java.awt.Font("Tahoma", 0, 24), new java.awt.Color(102, 102, 102))); // NOI18N
+        lista3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        lista3.setToolTipText("");
+        jPanel2.add(lista3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 230, 390, 190));
 
-        txt_nombreRespon.setBackground(new java.awt.Color(204, 204, 204));
-        txt_nombreRespon.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        txt_nombreRespon.setForeground(new java.awt.Color(51, 51, 51));
-        txt_nombreRespon.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txt_nombreRespon.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)), "", javax.swing.border.TitledBorder.RIGHT, javax.swing.border.TitledBorder.ABOVE_BOTTOM, new java.awt.Font("Tahoma", 1, 11), new java.awt.Color(102, 102, 102))); // NOI18N
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txt_nombreRespon, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
-                    .addComponent(txt_nombreanimal)
-                    .addComponent(txt_idanimal))
-                .addContainerGap(28, Short.MAX_VALUE))
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(txt_idanimal, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
-                .addComponent(txt_nombreanimal, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
-                .addComponent(txt_nombreRespon, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(34, Short.MAX_VALUE))
-        );
-
-        jPanel2.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 30, -1, 330));
-        jPanel7.getAccessibleContext().setAccessibleName("");
-
-        jPanel9.setBackground(new java.awt.Color(204, 204, 204));
-        jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)), "Caracteristicas", javax.swing.border.TitledBorder.RIGHT, javax.swing.border.TitledBorder.ABOVE_TOP, new java.awt.Font("Tahoma", 0, 24), new java.awt.Color(102, 102, 102))); // NOI18N
-
-        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
-        jPanel9.setLayout(jPanel9Layout);
-        jPanel9Layout.setHorizontalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 530, Short.MAX_VALUE)
-        );
-        jPanel9Layout.setVerticalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 293, Short.MAX_VALUE)
-        );
-
-        jPanel2.add(jPanel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 30, 540, 330));
+        lista4.setBackground(new java.awt.Color(204, 204, 204));
+        lista4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)), "Red", javax.swing.border.TitledBorder.RIGHT, javax.swing.border.TitledBorder.ABOVE_TOP, new java.awt.Font("Tahoma", 0, 24), new java.awt.Color(102, 102, 102))); // NOI18N
+        lista4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        lista4.setToolTipText("");
+        jPanel2.add(lista4, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 230, 390, 190));
 
         titulo.setBackground(new java.awt.Color(204, 204, 204));
         titulo.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
         titulo.setForeground(new java.awt.Color(153, 153, 153));
         titulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        titulo.setText("Sistema DDD");
+        titulo.setText("Informe.");
         titulo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
-        conf.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        conf.setForeground(new java.awt.Color(255, 255, 255));
-        conf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/cong.png"))); // NOI18N
-        conf.setBorder(null);
-        conf.setContentAreaFilled(false);
-        conf.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        conf.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        conf.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/cong1.png"))); // NOI18N
-        conf.addActionListener(new java.awt.event.ActionListener() {
+        imp.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        imp.setForeground(new java.awt.Color(255, 255, 255));
+        imp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/re.png"))); // NOI18N
+        imp.setBorder(null);
+        imp.setContentAreaFilled(false);
+        imp.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        imp.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        imp.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/re1.png"))); // NOI18N
+        imp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                confActionPerformed(evt);
+                impActionPerformed(evt);
             }
         });
 
@@ -131,21 +222,21 @@ public class Prueba extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(titulo)
-                        .addGap(73, 73, 73))
+                        .addComponent(imp)
+                        .addGap(60, 60, 60))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(conf)
-                        .addGap(60, 60, 60))))
+                        .addComponent(titulo)
+                        .addGap(102, 102, 102))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(31, 31, 31)
+                .addContainerGap()
                 .addComponent(titulo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 439, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 407, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(conf)
+                .addComponent(imp)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -163,9 +254,9 @@ public class Prueba extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void confActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confActionPerformed
-        mt.Mostrar();
-    }//GEN-LAST:event_confActionPerformed
+    private void impActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_impActionPerformed
+        
+    }//GEN-LAST:event_impActionPerformed
 
     /**
      * @param args the command line arguments
@@ -203,14 +294,13 @@ public class Prueba extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public static javax.swing.JButton conf;
+    public static javax.swing.JButton imp;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel9;
+    private javax.swing.JList lista1;
+    private javax.swing.JList lista2;
+    private javax.swing.JList lista3;
+    private javax.swing.JList lista4;
     private javax.swing.JLabel titulo;
-    public static javax.swing.JTextField txt_idanimal;
-    public static javax.swing.JTextField txt_nombreRespon;
-    public static javax.swing.JTextField txt_nombreanimal;
     // End of variables declaration//GEN-END:variables
 }
