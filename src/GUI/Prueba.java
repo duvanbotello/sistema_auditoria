@@ -1,6 +1,6 @@
-
 package GUI;
 
+import Clases.Conexion;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -23,17 +23,18 @@ public class Prueba extends javax.swing.JFrame {
     Sigar s;
     NetInterfaceConfig net;
     NetInfo info;
-    
+
     DefaultListModel mol1;
     DefaultListModel mol2;
     DefaultListModel mol3;
     DefaultListModel mol4;
-        
-    
+
     public Prueba() {
         initComponents();
         setLocationRelativeTo(null);
-        
+
+        Conexion conexion = new Conexion();
+
         so = OperatingSystem.getInstance();
         s = new Sigar();
         try {
@@ -42,39 +43,39 @@ public class Prueba extends javax.swing.JFrame {
         } catch (SigarException ex) {
             Logger.getLogger(Prueba.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         mol1 = new DefaultListModel();
         mol2 = new DefaultListModel();
         mol3 = new DefaultListModel();
         mol4 = new DefaultListModel();
-        
+
 //        informacion SO
-        for(int i=0; i < infoSO().size(); i += 2){
-            mol1.addElement(infoSO().get(i)+"  "+infoSO().get(i+1));
+        for (int i = 0; i < infoSO().size(); i += 2) {
+            mol1.addElement(infoSO().get(i) + "  " + infoSO().get(i + 1));
         }
         lista1.setModel(mol1);
-        
+
 //        informacion CPU
-        for(int i=0; i < infoCPU().size(); i += 2){
-            mol2.addElement(infoCPU().get(i)+"  "+infoCPU().get(i+1));
+        for (int i = 0; i < infoCPU().size(); i += 2) {
+            mol2.addElement(infoCPU().get(i) + "  " + infoCPU().get(i + 1));
         }
         lista2.setModel(mol2);
-        
+
 //        informacion Disco
-        for(int i=0; i < infoDisco().size(); i += 2){
-            mol3.addElement(infoDisco().get(i)+"  "+infoDisco().get(i+1));
+        for (int i = 0; i < infoDisco().size(); i += 2) {
+            mol3.addElement(infoDisco().get(i) + "  " + infoDisco().get(i + 1));
         }
         lista3.setModel(mol3);
-        
+
 //        informacion Red
-        for(int i=0; i < infoRed().size(); i += 2){
-            mol4.addElement(infoRed().get(i)+"  "+infoRed().get(i+1));
+        for (int i = 0; i < infoRed().size(); i += 2) {
+            mol4.addElement(infoRed().get(i) + "  " + infoRed().get(i + 1));
         }
         lista4.setModel(mol4);
     }
-       
-    public ArrayList<String> infoSO(){
-        ArrayList<String> datos=new ArrayList();
+
+    public ArrayList<String> infoSO() {
+        ArrayList<String> datos = new ArrayList();
         datos.add("Descripcion: ");
         datos.add(so.getDescription());
         datos.add("Nombre: ");
@@ -90,39 +91,39 @@ public class Prueba extends javax.swing.JFrame {
         return datos;
     }
 
-    public ArrayList<String> infoCPU(){
-        ArrayList<String> datos=new ArrayList();
+    public ArrayList<String> infoCPU() {
+        ArrayList<String> datos = new ArrayList();
         try {
-         CpuInfo cpu[]=s.getCpuInfoList();
-         CpuInfo data=cpu[0];
-         datos.add("Vendedor: ");
-         datos.add(data.getVendor());
-         datos.add("Modelo: ");
-         datos.add(data.getModel());
-         datos.add("Mhz: ");
-         datos.add(""+data.getMhz());
-         if(data.getCacheSize()!=Sigar.FIELD_NOTIMPL){
-          datos.add("Tamaño de Cache: ");
-          datos.add(""+data.getCacheSize());
-         }
-         if ((data.getTotalCores() != data.getTotalSockets()) || (data.getCoresPerSocket() > data.getTotalCores())) {
-          datos.add("CPU´s Fisicas: ");
-          datos.add(""+data.getTotalSockets());
-          datos.add("Nucleos por CPU: ");
-          datos.add(""+data.getCoresPerSocket());
-         }
+            CpuInfo cpu[] = s.getCpuInfoList();
+            CpuInfo data = cpu[0];
+            datos.add("Vendedor: ");
+            datos.add(data.getVendor());
+            datos.add("Modelo: ");
+            datos.add(data.getModel());
+            datos.add("Mhz: ");
+            datos.add("" + data.getMhz());
+            if (data.getCacheSize() != Sigar.FIELD_NOTIMPL) {
+                datos.add("Tamaño de Cache: ");
+                datos.add("" + data.getCacheSize());
+            }
+            if ((data.getTotalCores() != data.getTotalSockets()) || (data.getCoresPerSocket() > data.getTotalCores())) {
+                datos.add("CPU´s Fisicas: ");
+                datos.add("" + data.getTotalSockets());
+                datos.add("Nucleos por CPU: ");
+                datos.add("" + data.getCoresPerSocket());
+            }
 
         } catch (SigarException e) {
         }
         return datos;
     }
 
-    public ArrayList<String> infoDisco(){
-        File file = new File( System.getProperty("user.dir") ); 
+    public ArrayList<String> infoDisco() {
+        File file = new File(System.getProperty("user.dir"));
         Long total = file.getTotalSpace();
         Long libre = file.getFreeSpace();
         Long usado = total - libre;
-        ArrayList<String> datos=new ArrayList();
+        ArrayList<String> datos = new ArrayList();
         datos.add("Espacio Total: ");
         datos.add(total.toString());
         datos.add("Espacio Libre: ");
@@ -130,22 +131,22 @@ public class Prueba extends javax.swing.JFrame {
         datos.add("Espacio Usado: ");
         datos.add(usado.toString());
         datos.add("Unidades: ");
-        File drives[] = File.listRoots(); 
+        File drives[] = File.listRoots();
         for (File drive : drives) {
             datos.add(drive.toString());
         }
         return datos;
     }
 
-     public ArrayList<String> infoRed(){
-        ArrayList<String> datos=new ArrayList();
+    public ArrayList<String> infoRed() {
+        ArrayList<String> datos = new ArrayList();
         datos.add("IP primaria: ");
         datos.add(net.getAddress());
         datos.add("Mac primaria: ");
         datos.add(net.getHwaddr());
         datos.add("Host: ");
         datos.add(info.getHostName());
-        return datos; 
+        return datos;
     }
 
     @SuppressWarnings("unchecked")
@@ -255,7 +256,7 @@ public class Prueba extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void impActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_impActionPerformed
-        
+
     }//GEN-LAST:event_impActionPerformed
 
     /**
