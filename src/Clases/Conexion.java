@@ -18,34 +18,47 @@ import java.util.Date;
  */
 public class Conexion {
 
+    private String url = "jdbc:mysql://localhost:3306/auditoria";
+    private String username = "root";
+    private String password = "";
+    private Connection connection;
+
     public Conexion() {
+        
+    }
+
+    public boolean Insertar(String query) {
+        boolean rs = true;
         try {
 
-            String url = "jdbc:mysql://localhost:3306/asesoria";
-            String username = "root";
-            String password = "";
-
-            Connection connection = DriverManager.getConnection(url, username, password);
-
+            connection = DriverManager.getConnection(this.url, this.username, this.password);
             Statement statement = (Statement) connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * FROM usuario");
-
-            while (rs.next()) {
-
-                int id = rs.getInt("usu_documento");
-                String nombre = rs.getString("usu_nombres");
-                String apellido = rs.getString("usu_apellidos");
-               
-                System.out.println(String.format("%d, %s %s", id, nombre, apellido));
-            }
-
-            rs.close();
+            rs = statement.execute(query);
             statement.close();
             connection.close();
-
+           
         } catch (SQLException ex) {
             System.out.println(ex);
+            
         }
+        return rs;
+        
+    }
+    
+    private void buscar(){
+                
+            System.out.println("sasdd");
+//            while (rs.next()) {
+//
+//                int id = rs.getInt("usu_documento");
+//                String nombre = rs.getString("usu_nombres");
+//                String apellido = rs.getString("usu_apellidos");
+//
+//                System.out.println(String.format("%d, %s %s", id, nombre, apellido));
+//            }
+
+           
+    
     }
 
 }
