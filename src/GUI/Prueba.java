@@ -1,17 +1,10 @@
 package GUI;
 
 import Clases.Conexion;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.DefaultListModel;
-import org.hyperic.sigar.CpuInfo;
-import org.hyperic.sigar.NetInfo;
-import org.hyperic.sigar.NetInterfaceConfig;
-import org.hyperic.sigar.OperatingSystem;
-import org.hyperic.sigar.Sigar;
-import org.hyperic.sigar.SigarException;
+import Clases.DataCPU;
+import Clases.DataDisco;
+import Clases.DataRed;
+import Clases.DataSO;
 
 /**
  *
@@ -19,134 +12,33 @@ import org.hyperic.sigar.SigarException;
  */
 public class Prueba extends javax.swing.JFrame {
 
-    OperatingSystem so;
-    Sigar s;
-    NetInterfaceConfig net;
-    NetInfo info;
-
-    DefaultListModel mol1;
-    DefaultListModel mol2;
-    DefaultListModel mol3;
-    DefaultListModel mol4;
+    Conexion conexion;
+    DataSO dso;
+    DataCPU dcpu;
+    DataDisco dsc;
+    DataRed dred;
 
     public Prueba() {
         initComponents();
         setLocationRelativeTo(null);
 
-        Conexion conexion = new Conexion();
-
-        so = OperatingSystem.getInstance();
-        s = new Sigar();
-        try {
-            net = s.getNetInterfaceConfig(null);
-            info = s.getNetInfo();
-        } catch (SigarException ex) {
-            Logger.getLogger(Prueba.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        mol1 = new DefaultListModel();
-        mol2 = new DefaultListModel();
-        mol3 = new DefaultListModel();
-        mol4 = new DefaultListModel();
+        conexion = new Conexion();
+        dso = new DataSO();
+        dcpu = new DataCPU();
+        dsc = new DataDisco();
+        dred = new DataRed();
 
 //        informacion SO
-        for (int i = 0; i < infoSO().size(); i += 2) {
-            mol1.addElement(infoSO().get(i) + "  " + infoSO().get(i + 1));
-        }
-        lista1.setModel(mol1);
+        lista1.setModel(dso.modelData());
 
 //        informacion CPU
-        for (int i = 0; i < infoCPU().size(); i += 2) {
-            mol2.addElement(infoCPU().get(i) + "  " + infoCPU().get(i + 1));
-        }
-        lista2.setModel(mol2);
+        lista2.setModel(dcpu.modelData());
 
 //        informacion Disco
-        for (int i = 0; i < infoDisco().size(); i += 2) {
-            mol3.addElement(infoDisco().get(i) + "  " + infoDisco().get(i + 1));
-        }
-        lista3.setModel(mol3);
+        lista3.setModel(dsc.modelData());
 
 //        informacion Red
-        for (int i = 0; i < infoRed().size(); i += 2) {
-            mol4.addElement(infoRed().get(i) + "  " + infoRed().get(i + 1));
-        }
-        lista4.setModel(mol4);
-    }
-
-    public ArrayList<String> infoSO() {
-        ArrayList<String> datos = new ArrayList();
-        datos.add("Descripcion: ");
-        datos.add(so.getDescription());
-        datos.add("Nombre: ");
-        datos.add(so.getVendorName());
-        datos.add("Version: ");
-        datos.add(so.getVersion());
-        datos.add("Arquitectura: ");
-        datos.add(so.getArch());
-        datos.add("Usuario: ");
-        datos.add(System.getProperty("user.name"));
-        datos.add("Directorio del Usuario: ");
-        datos.add(System.getProperty("user.home"));
-        return datos;
-    }
-
-    public ArrayList<String> infoCPU() {
-        ArrayList<String> datos = new ArrayList();
-        try {
-            CpuInfo cpu[] = s.getCpuInfoList();
-            CpuInfo data = cpu[0];
-            datos.add("Vendedor: ");
-            datos.add(data.getVendor());
-            datos.add("Modelo: ");
-            datos.add(data.getModel());
-            datos.add("Mhz: ");
-            datos.add("" + data.getMhz());
-            if (data.getCacheSize() != Sigar.FIELD_NOTIMPL) {
-                datos.add("Tamaño de Cache: ");
-                datos.add("" + data.getCacheSize());
-            }
-            if ((data.getTotalCores() != data.getTotalSockets()) || (data.getCoresPerSocket() > data.getTotalCores())) {
-                datos.add("CPU´s Fisicas: ");
-                datos.add("" + data.getTotalSockets());
-                datos.add("Nucleos por CPU: ");
-                datos.add("" + data.getCoresPerSocket());
-            }
-
-        } catch (SigarException e) {
-        }
-        return datos;
-    }
-
-    public ArrayList<String> infoDisco() {
-        File file = new File(System.getProperty("user.dir"));
-        Long total = file.getTotalSpace();
-        Long libre = file.getFreeSpace();
-        Long usado = total - libre;
-        ArrayList<String> datos = new ArrayList();
-        datos.add("Espacio Total: ");
-        datos.add(total.toString());
-        datos.add("Espacio Libre: ");
-        datos.add(libre.toString());
-        datos.add("Espacio Usado: ");
-        datos.add(usado.toString());
-        datos.add("Unidades: ");
-        File drives[] = File.listRoots();
-        for (File drive : drives) {
-            datos.add(drive.toString());
-        }
-        return datos;
-    }
-
-    public ArrayList<String> infoRed() {
-        ArrayList<String> datos = new ArrayList();
-        datos.add("IP primaria: ");
-        datos.add(net.getAddress());
-        datos.add("Mac primaria: ");
-        datos.add(net.getHwaddr());
-        datos.add("Host: ");
-        datos.add(info.getHostName());
-        return datos;
+        lista4.setModel(dred.modelData());
     }
 
     @SuppressWarnings("unchecked")
@@ -202,12 +94,12 @@ public class Prueba extends javax.swing.JFrame {
 
         imp.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         imp.setForeground(new java.awt.Color(255, 255, 255));
-        imp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/re.png"))); // NOI18N
+        imp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/re.png"))); // NOI18N
         imp.setBorder(null);
         imp.setContentAreaFilled(false);
         imp.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         imp.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        imp.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/re1.png"))); // NOI18N
+        imp.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/re1.png"))); // NOI18N
         imp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 impActionPerformed(evt);
