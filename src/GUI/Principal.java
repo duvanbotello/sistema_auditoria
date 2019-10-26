@@ -1,6 +1,7 @@
 package GUI;
 
 import Clases.Conexion;
+import java.text.SimpleDateFormat;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -10,14 +11,16 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Principal extends javax.swing.JFrame {
 
-
-    DefaultTableModel modelo = new DefaultTableModel();
+    DefaultTableModel modelo = new DefaultTableModel() {
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+    };
     Conexion cone = new Conexion();
 
     /**
      * Creates new form Principal
      */
-
     public Principal() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -131,12 +134,17 @@ public class Principal extends javax.swing.JFrame {
 
         if (!"".equals(txtnombreaudi.getText())) {
             if (txt_fecha.getDate() != null) {
-                
-                String query = "INSERT INTO `auditoria`(`audi_nombre`, `audi_fecha`) VALUES (" + txtnombreaudi.getText() + "," + txt_fecha.getDate() + ")";
+                SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
+                String query = "INSERT INTO `auditoria`(`idaudioria`, `audi_nombre`, `audi_fecha`) VALUES (null,'" + txtnombreaudi.getText() + "','" + dt1.format(txt_fecha.getDate()) + "')";
+                System.out.println(query);
                 if (cone.Insertar(query)) {
                     JOptionPane.showMessageDialog(null, "Intenta de nuevo", "Mensaje", JOptionPane.WARNING_MESSAGE);
 
                 } else {
+                    this.limpiarTabla();
+                    cone.CargarAuditoria(modelo);
+                    txtnombreaudi.setText("");
+                    txt_fecha.setDate(null);
                     JOptionPane.showMessageDialog(null, "Nueva auditoria registrada", "Mensaje", JOptionPane.WARNING_MESSAGE);
 
                 }
@@ -149,6 +157,13 @@ public class Principal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Por favor ingrese nombre auditoria", "Mensaje", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void limpiarTabla() {
+        for (int i = 0; i < tabla1.getRowCount(); i++) {
+            modelo.removeRow(i);
+            i -= 1;
+        }
+    }
 
     /**
      * @param args the command line arguments
