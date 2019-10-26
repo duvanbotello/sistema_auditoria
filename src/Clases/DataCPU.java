@@ -49,13 +49,7 @@ public class DataCPU {
         return datos;
     }
     
-    public DefaultListModel modelData(){
-        DefaultListModel mol = new DefaultListModel();
-        for (int i = 0; i < infoCPU().size(); i += 2) {
-            mol.addElement(infoCPU().get(i) + "  " + infoCPU().get(i + 1));
-        }
-        return mol;
-    }
+    
 
     
 }

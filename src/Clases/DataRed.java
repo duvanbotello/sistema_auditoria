@@ -45,12 +45,6 @@ public class DataRed {
         return datos;
     }
     
-    public DefaultListModel modelData(){
-        DefaultListModel mol = new DefaultListModel();
-        for (int i = 0; i < infoRed().size(); i += 2) {
-            mol.addElement(infoRed().get(i) + "  " + infoRed().get(i + 1));
-        }
-        return mol;
-    }
+    
 
 }

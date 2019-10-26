@@ -31,13 +31,18 @@ public class Conexion {
 
     }
 
-    public boolean Insertar(String query) {
-        boolean rs = true;
+    public int Insertar(String query) {
+        int rs = 0;
         try {
 
             connection = DriverManager.getConnection(this.url, this.username, this.password);
             Statement statement = (Statement) connection.createStatement();
-            rs = statement.execute(query);
+            rs = statement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+            ResultSet rss = statement.getGeneratedKeys();
+            if (rss.next()) {
+                rs = rss.getInt(1);
+            }
+            rss.close();
             statement.close();
             connection.close();
 
@@ -70,9 +75,9 @@ public class Conexion {
         }
 
     }
-    
+
     public void CargarAuditoria2(LinkedList<Auditoria> datos) {
-       
+
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd");
         try {
             String query = "select * from auditoria";
@@ -91,8 +96,6 @@ public class Conexion {
             connection.close();
         } catch (Exception e) {
         }
-        
-    
 
     }
 
