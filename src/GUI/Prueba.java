@@ -33,10 +33,10 @@ public class Prueba extends javax.swing.JFrame {
 
 //        informacion CPU
         lista2.setModel(dcpu.modelData());
-
+//
 //        informacion Disco
-        lista3.setModel(dsc.modelData());
-
+//        lista3.setModel(dsc.modelData());
+//
 //        informacion Red
         lista4.setModel(dred.modelData());
     }

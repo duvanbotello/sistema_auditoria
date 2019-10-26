@@ -10,7 +10,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -66,6 +68,31 @@ public class Conexion {
             connection.close();
         } catch (Exception e) {
         }
+
+    }
+    
+    public void CargarAuditoria2(LinkedList<Auditoria> datos) {
+       
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd");
+        try {
+            String query = "select * from auditoria";
+            connection = DriverManager.getConnection(this.url, this.username, this.password);
+            Statement statement = (Statement) connection.createStatement();
+            ResultSet rg = statement.executeQuery(query);
+            while (rg.next()) {
+                int id = rg.getInt("idaudioria");
+                String nombre = rg.getString("audi_nombre");
+                Date fecha = formatter.parse(rg.getString("audi_fecha"));
+                Auditoria objeto = new Auditoria(id, nombre, fecha);
+                datos.add(objeto);
+            }
+            rg.close();
+            statement.close();
+            connection.close();
+        } catch (Exception e) {
+        }
+        
+    
 
     }
 

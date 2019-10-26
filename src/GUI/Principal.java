@@ -2,6 +2,7 @@ package GUI;
 
 import Clases.Conexion;
 import java.text.SimpleDateFormat;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -10,7 +11,8 @@ import javax.swing.table.DefaultTableModel;
  * @author nain
  */
 public class Principal extends javax.swing.JFrame {
-
+    String[] list = {"A", "B", "C"};
+    JComboBox jcb = new JComboBox(list);
     DefaultTableModel modelo = new DefaultTableModel() {
         public boolean isCellEditable(int rowIndex, int columnIndex) {
             return false;
@@ -123,7 +125,8 @@ public class Principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
+        
+        JOptionPane.showMessageDialog( null, jcb, "Seleccione Auditoria", JOptionPane.QUESTION_MESSAGE);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void txtnombreaudiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtnombreaudiActionPerformed
