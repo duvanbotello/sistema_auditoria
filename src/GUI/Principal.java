@@ -5,11 +5,18 @@
  */
 package GUI;
 
+import Clases.Conexion;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author nain
  */
 public class Principal extends javax.swing.JFrame {
+
+    DefaultTableModel modelo = new DefaultTableModel();
+    Conexion cone = new Conexion();
 
     /**
      * Creates new form Principal
@@ -17,6 +24,16 @@ public class Principal extends javax.swing.JFrame {
     public Principal() {
         initComponents();
         this.setLocationRelativeTo(null);
+        this.crearTabla();
+        cone.CargarAuditoria(modelo);
+
+    }
+
+    public void crearTabla() {
+        tabla1.setModel(modelo);
+        modelo.setColumnIdentifiers(new Object[]{
+            "id", "Nombre Auditoria", "Fecha de Auditoria"
+        });
     }
 
     /**
@@ -34,9 +51,10 @@ public class Principal extends javax.swing.JFrame {
         txtnombreaudi = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        tabla1 = new javax.swing.JTable();
         txt_fecha = new com.toedter.calendar.JDateChooser();
+        jPanel1 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -65,7 +83,7 @@ public class Principal extends javax.swing.JFrame {
         jLabel4.setText("Ingrese Fecha Auditoria:");
         getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 190, -1, -1));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tabla1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -76,13 +94,20 @@ public class Principal extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tabla1);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 230, 620, 220));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 250, 620, 220));
+        getContentPane().add(txt_fecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 180, 200, -1));
 
         jButton1.setText("Añadir nueva Auditoria");
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 150, -1, -1));
-        getContentPane().add(txt_fecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 180, 200, -1));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton1);
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 490, 770, 40));
 
         jMenu1.setText("Opciones");
 
@@ -109,6 +134,29 @@ public class Principal extends javax.swing.JFrame {
     private void txtnombreaudiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtnombreaudiActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtnombreaudiActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+        if (!"".equals(txtnombreaudi.getText())) {
+            if (txt_fecha.getDate() != null) {
+                
+                String query = "INSERT INTO `auditoria`(`audi_nombre`, `audi_fecha`) VALUES (" + txtnombreaudi.getText() + "," + txt_fecha.getDate() + ")";
+                if (cone.Insertar(query)) {
+                    JOptionPane.showMessageDialog(null, "Intenta de nuevo", "Mensaje", JOptionPane.WARNING_MESSAGE);
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "Nueva auditoria registrada", "Mensaje", JOptionPane.WARNING_MESSAGE);
+
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Por favor ingrese Fecha auditoria", "Mensaje", JOptionPane.WARNING_MESSAGE);
+
+            }
+        } else {
+
+            JOptionPane.showMessageDialog(null, "Por favor ingrese nombre auditoria", "Mensaje", JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -154,8 +202,9 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tabla1;
     private com.toedter.calendar.JDateChooser txt_fecha;
     private javax.swing.JTextField txtnombreaudi;
     // End of variables declaration//GEN-END:variables
