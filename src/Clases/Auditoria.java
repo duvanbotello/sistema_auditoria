@@ -12,14 +12,25 @@ import java.util.Date;
  * @author nain
  */
 public class Auditoria {
+
+    private int id;
     private String aud_nombre;
     private Date fecha_aud;
 
-    public Auditoria(String aud_nombre, Date fecha_aud) {
+    public Auditoria(int id, String aud_nombre, Date fecha_aud) {
+        this.id = id;
         this.aud_nombre = aud_nombre;
         this.fecha_aud = fecha_aud;
     }
-    
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getAud_nombre() {
         return aud_nombre;
     }
@@ -37,4 +48,5 @@ public class Auditoria {
     }
     
     
+
 }

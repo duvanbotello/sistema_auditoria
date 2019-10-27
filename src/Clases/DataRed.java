@@ -5,7 +5,6 @@
  */
 package Clases;
 
-import GUI.Prueba;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +29,7 @@ public class DataRed {
             net = s.getNetInterfaceConfig(null);
             info = s.getNetInfo();
         } catch (SigarException ex) {
-            Logger.getLogger(Prueba.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DataRed.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

@@ -30,9 +30,11 @@ public class DataDisco {
         datos.add(usado.toString());
         datos.add("Unidades: ");
         File drives[] = File.listRoots();
-        for (File drive : drives) {
-            datos.add(drive.toString());
+        StringBuffer cadenaUnid = new StringBuffer();
+        for (int i = 0; i < drives.length; i++){
+            cadenaUnid = cadenaUnid.append(drives[i]);
         }
+        datos.add(cadenaUnid.toString());
         return datos;
     }
     
