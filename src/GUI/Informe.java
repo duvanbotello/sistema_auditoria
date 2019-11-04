@@ -244,13 +244,14 @@ public class Informe extends javax.swing.JPanel {
                 }
             }
             System.out.println(unidades);
-            String queryDisco = "INSERT INTO `auditoria`.`disco` (`iddisco`,`espaciototal`,`espaciodisponible`,`espaciousado`,`unidades`) VALUES (null,'" + espaciototal + "','" + espaciolibre + "','" + espaciousado + "','" + unidades + "');";
+            String queryDisco = "INSERT INTO `auditoria`.`disco` (`iddisco`,`espaciototal`,`espaciodisponible`,`espaciousado`,`unidades`) VALUES (null,'" + espaciototal + "','" + espaciolibre + "','" + espaciousado + "','" + unidades +"2" +"');";
             String queryRed = "INSERT INTO `auditoria`.`red` (`idred`,`ip_primaria`,`mac_primaria`,`host`)VALUES(null,'" + ipprimaria + "','" + mac_primaria + "','" + host + "');";
             String queryCPU = "INSERT INTO `auditoria`.`cpu` (`idcpu`,`vendedor`,`modelo`,`mhz`,`tam_cache`,`cpufisica`,`nucleoscpu`) VALUES (null,'" + vendedor + "','" + modelo + "','" + mhz + "','" + tam_cache + "','" + cpifisca + "','" + nucleoscpi + "');";
             String querySO = "INSERT INTO `auditoria`.`sistema_operativo` (`idsistema_operativo`,`nombre`,`descripcion`,`version`,`arquitectura`,`usuario`,`directorio`)VALUES(null,'" + nombre + "','" + descripcion + "','" + version + "','" + arquictectura + "','" + usuario + "','" + directorio + "');";
 
             int idred = conexion.Insertar(queryRed);
             int iddisco = conexion.Insertar(queryDisco);
+            System.out.println(iddisco);
             int idcpu = conexion.Insertar(queryCPU);
             int idso = conexion.Insertar(querySO);
 

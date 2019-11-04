@@ -23,7 +23,7 @@ public class Conexion {
 
     private String url = "jdbc:mysql://localhost:3306/auditoria";
     private String username = "root";
-    private String password = "";
+    private String password = "3156845188s1";
     private Connection connection;
 
     public Conexion() {
@@ -31,6 +31,7 @@ public class Conexion {
     }
 
     public int Insertar(String query) {
+        System.out.println(query);
         int rs = 0;
         try {
 
