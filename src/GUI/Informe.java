@@ -7,7 +7,20 @@ import Clases.DataDisco;
 import Clases.DataRed;
 import Clases.DataSO;
 import static GUI.Principal.p_principal;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -42,6 +55,7 @@ public class Informe extends javax.swing.JPanel {
         tituloinf = new javax.swing.JLabel();
         back = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(204, 204, 204));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -105,6 +119,14 @@ public class Informe extends javax.swing.JPanel {
             }
         });
         add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 470, -1, -1));
+
+        jButton2.setText("Reporte");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 470, -1, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
@@ -267,10 +289,37 @@ public class Informe extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        Conexion con = new Conexion();
+        Connection conn = null;
+        JasperReport reporte = null;
+        String path = "src/Reportes/report3.jasper";
+
+        try {
+            int id_auditoria = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese Id Auditoria"));
+            conn = con.getConexion();
+            reporte = (JasperReport) JRLoader.loadObjectFromFile(path);
+            @SuppressWarnings("unchecked")
+            Map<String, Object> parametro = new HashMap();
+            parametro.put("idauditoria", id_auditoria);
+            JasperPrint jprint = JasperFillManager.fillReport(path, parametro, conn);
+            JasperViewer view = new JasperViewer(jprint, false);
+
+            view.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            view.setVisible(true);
+
+        } catch (JRException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al Ingresar Dato");
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel back;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

@@ -25,10 +25,25 @@ public class Conexion {
     private String username = "root";
     private String password = "3156845188s1";
     private Connection connection;
+    private Connection conexion;
 
     public Conexion() {
-
+        try {
+            this.conexion = DriverManager.getConnection(url, username, password);
+        } catch (Exception e) {
+            System.out.println("Error en la conexion");
+        }
     }
+
+    public Connection getConexion() {
+        return conexion;
+    }
+
+    public void setConexion(Connection conexion) {
+        this.conexion = conexion;
+    }
+    
+    
 
     public int Insertar(String query) {
         System.out.println(query);
