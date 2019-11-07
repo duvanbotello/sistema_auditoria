@@ -3,10 +3,22 @@ package GUI;
 
 import AppPackage.AnimationClass;
 import Clases.Conexion;
+import java.sql.Connection;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -92,7 +104,7 @@ public class Principal extends javax.swing.JFrame {
         autores.setBackground(new java.awt.Color(255, 255, 255));
         autores.setFont(new java.awt.Font("Open Sans Semibold", 0, 14)); // NOI18N
         autores.setForeground(new java.awt.Color(56, 90, 114));
-        autores.setText("Creado por: Daniel Luna, Duvan Botello.");
+        autores.setText("Creado por: Duvan - Daniel - Dayron.");
         p_auditoria.add(autores, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 575, 280, 40));
 
         jLabel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -149,9 +161,19 @@ public class Principal extends javax.swing.JFrame {
         p_auditoria.add(añadir, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 460, -1, 50));
 
         opc1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/opc1.png"))); // NOI18N
+        opc1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                opc1MouseClicked(evt);
+            }
+        });
         p_auditoria.add(opc1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-50, 0, 50, 50));
 
         opc2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/print.png"))); // NOI18N
+        opc2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                opc2MouseClicked(evt);
+            }
+        });
         p_auditoria.add(opc2, new org.netbeans.lib.awtextra.AbsoluteConstraints(-50, 0, 50, -1));
 
         getContentPane().add(p_auditoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 310, 580));
@@ -253,6 +275,166 @@ public class Principal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Por favor ingrese nombre auditoria", "Mensaje", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_añadirActionPerformed
+
+    private void opc1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_opc1MouseClicked
+        try {
+            int idauditoria = Integer.parseInt(JOptionPane.showInputDialog("Inserte ID Auditoria"));
+            String vendedor = "";
+            String modelo = "";
+            String mhz = "";
+            String tam_cache = "";
+            String cpifisca = "";
+            String nucleoscpi = "";
+            Informe ifm = new Informe();
+
+            for (int i = 0; i < ifm.dcpu.infoCPU().size(); i += 2) {
+                switch (i + 1) {
+                    case 1:
+                    vendedor = ifm.dcpu.infoCPU().get(i + 1);
+                    break;
+                    case 3:
+                    modelo = ifm.dcpu.infoCPU().get(i + 1);
+                    break;
+                    case 5:
+                    mhz = ifm.dcpu.infoCPU().get(i + 1);
+                    break;
+                    case 7:
+                    tam_cache = ifm.dcpu.infoCPU().get(i + 1);
+                    break;
+                    case 9:
+                    cpifisca = ifm.dcpu.infoCPU().get(i + 1);
+                    break;
+                    case 11:
+                    nucleoscpi = ifm.dcpu.infoCPU().get(i + 1);
+                    break;
+                    default:
+                    break;
+                }
+            }
+            String ipprimaria = "";
+            String mac_primaria = "";
+            String host = "";
+
+            for (int i = 0; i < ifm.dred.infoRed().size(); i += 2) {
+                switch (i + 1) {
+                    case 1:
+                    ipprimaria = ifm.dred.infoRed().get(i + 1);
+                    break;
+                    case 3:
+                    mac_primaria = ifm.dred.infoRed().get(i + 1);
+                    break;
+                    case 5:
+                    host = ifm.dred.infoRed().get(i + 1);
+                    break;
+                    default:
+                    break;
+                }
+            }
+
+            String nombre = "";
+            String descripcion = "";
+            String version = "";
+            String arquictectura = "";
+            String usuario = "";
+            String directorio = "";
+
+            for (int i = 0; i < ifm.dso.infoSO().size(); i += 2) {
+                switch (i + 1) {
+                    case 1:
+                    descripcion = ifm.dso.infoSO().get(i + 1);
+                    break;
+                    case 3:
+                    nombre = ifm.dso.infoSO().get(i + 1);
+                    break;
+                    case 5:
+                    version = ifm.dso.infoSO().get(i + 1);
+                    break;
+                    case 7:
+                    arquictectura = ifm.dso.infoSO().get(i + 1);
+                    break;
+                    case 9:
+                    usuario = ifm.dso.infoSO().get(i + 1);
+                    break;
+                    case 11:
+                    directorio = ifm.dso.infoSO().get(i + 1);
+                    break;
+                    default:
+                    break;
+                }
+            }
+            
+            String espaciototal = "";
+            String espaciolibre = "";
+            String espaciousado = "";
+            String unidades = "";
+
+            for (int i = 0; i < ifm.dsc.infoDisco().size(); i += 2) {
+                switch (i + 1) {
+                    case 1:
+                    espaciototal = ifm.dsc.infoDisco().get(i + 1);
+                    break;
+                    case 3:
+                    espaciolibre = ifm.dsc.infoDisco().get(i + 1);
+                    break;
+                    case 5:
+                    espaciousado = ifm.dsc.infoDisco().get(i + 1);
+                    break;
+                    case 7:
+                    unidades = ifm.dsc.infoDisco().get(i + 1);
+                    break;
+                    default:
+                    break;
+                }
+            }
+            System.out.println(unidades);
+            String queryDisco = "INSERT INTO `auditoria`.`disco` (`iddisco`,`espaciototal`,`espaciodisponible`,`espaciousado`,`unidades`) VALUES (null,'" + espaciototal + "','" + espaciolibre + "','" + espaciousado + "','" + unidades +"2" +"');";
+            String queryRed = "INSERT INTO `auditoria`.`red` (`idred`,`ip_primaria`,`mac_primaria`,`host`)VALUES(null,'" + ipprimaria + "','" + mac_primaria + "','" + host + "');";
+            String queryCPU = "INSERT INTO `auditoria`.`cpu` (`idcpu`,`vendedor`,`modelo`,`mhz`,`tam_cache`,`cpufisica`,`nucleoscpu`) VALUES (null,'" + vendedor + "','" + modelo + "','" + mhz + "','" + tam_cache + "','" + cpifisca + "','" + nucleoscpi + "');";
+            String querySO = "INSERT INTO `auditoria`.`sistema_operativo` (`idsistema_operativo`,`nombre`,`descripcion`,`version`,`arquitectura`,`usuario`,`directorio`)VALUES(null,'" + nombre + "','" + descripcion + "','" + version + "','" + arquictectura + "','" + usuario + "','" + directorio + "');";
+
+            int idred = ifm.conexion.Insertar(queryRed);
+            int iddisco = ifm.conexion.Insertar(queryDisco);
+            System.out.println(iddisco);
+            int idcpu = ifm.conexion.Insertar(queryCPU);
+            int idso = ifm.conexion.Insertar(querySO);
+
+            String queryNuevoEuipo = "INSERT INTO `auditoria`.`audi_equipo` (`idaudi_equipo`,`idauditoria`,`sistema_operativo`,`cpu`,`red_idred`,`disco_iddisco`)VALUES(null," + idauditoria + "," + idso + "," + idcpu + "," + idred + "," + iddisco + ");";
+
+            if (ifm.conexion.Insertar(queryNuevoEuipo) > 0) {
+                JOptionPane.showMessageDialog(null, "Equipo registrado con exito");
+            } else {
+                JOptionPane.showMessageDialog(null, "Error, intentalo de nuevo");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error, intentalo de nuevo");
+        }
+    }//GEN-LAST:event_opc1MouseClicked
+
+    private void opc2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_opc2MouseClicked
+        Conexion con = new Conexion();
+        Connection conn = null;
+        JasperReport reporte = null;
+        String path = "src/Reportes/report3.jasper";
+
+        try {
+            int id_auditoria = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese Id Auditoria"));
+            conn = con.getConexion();
+            reporte = (JasperReport) JRLoader.loadObjectFromFile(path);
+            @SuppressWarnings("unchecked")
+            Map<String, Object> parametro = new HashMap();
+            parametro.put("idauditoria", id_auditoria);
+            JasperPrint jprint = JasperFillManager.fillReport(path, parametro, conn);
+            JasperViewer view = new JasperViewer(jprint, false);
+
+            view.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            view.setVisible(true);
+
+        } catch (JRException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al Ingresar Dato");
+        }
+    }//GEN-LAST:event_opc2MouseClicked
 
     /**
      * @param args the command line arguments

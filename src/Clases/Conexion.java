@@ -23,7 +23,8 @@ public class Conexion {
 
     private String url = "jdbc:mysql://localhost:3306/auditoria";
     private String username = "root";
-    private String password = "3156845188s1";
+//    private String password = "3156845188s1";
+    private String password = "";
     private Connection connection;
     private Connection conexion;
 

@@ -28,11 +28,11 @@ import net.sf.jasperreports.view.JasperViewer;
  */
 public class Informe extends javax.swing.JPanel {
 
-    DataSO dso;
-    DataCPU dcpu;
-    DataDisco dsc;
-    DataRed dred;
-    Conexion conexion;
+    public DataSO dso;
+    public DataCPU dcpu;
+    public DataDisco dsc;
+    public DataRed dred;
+    public Conexion conexion;
     
     public Informe() {
         initComponents();
@@ -54,8 +54,6 @@ public class Informe extends javax.swing.JPanel {
         lista = new javax.swing.JList();
         tituloinf = new javax.swing.JLabel();
         back = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(204, 204, 204));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -111,22 +109,6 @@ public class Informe extends javax.swing.JPanel {
             }
         });
         add(back, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 460, 50, 50));
-
-        jButton1.setText("Agregar Equipo");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 470, -1, -1));
-
-        jButton2.setText("Reporte");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-        add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 470, -1, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
@@ -156,170 +138,9 @@ public class Informe extends javax.swing.JPanel {
         Principal.tab.setVisible(true);
     }//GEN-LAST:event_backMouseClicked
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try {
-            int idauditoria = Integer.parseInt(JOptionPane.showInputDialog("Inserte ID Auditoria"));
-            String vendedor = "";
-            String modelo = "";
-            String mhz = "";
-            String tam_cache = "";
-            String cpifisca = "";
-            String nucleoscpi = "";
-
-            for (int i = 0; i < dcpu.infoCPU().size(); i += 2) {
-                switch (i + 1) {
-                    case 1:
-                    vendedor = dcpu.infoCPU().get(i + 1);
-                    break;
-                    case 3:
-                    modelo = dcpu.infoCPU().get(i + 1);
-                    break;
-                    case 5:
-                    mhz = dcpu.infoCPU().get(i + 1);
-                    break;
-                    case 7:
-                    tam_cache = dcpu.infoCPU().get(i + 1);
-                    break;
-                    case 9:
-                    cpifisca = dcpu.infoCPU().get(i + 1);
-                    break;
-                    case 11:
-                    nucleoscpi = dcpu.infoCPU().get(i + 1);
-                    break;
-                    default:
-                    break;
-                }
-            }
-            String ipprimaria = "";
-            String mac_primaria = "";
-            String host = "";
-
-            for (int i = 0; i < dred.infoRed().size(); i += 2) {
-                switch (i + 1) {
-                    case 1:
-                    ipprimaria = dred.infoRed().get(i + 1);
-                    break;
-                    case 3:
-                    mac_primaria = dred.infoRed().get(i + 1);
-                    break;
-                    case 5:
-                    host = dred.infoRed().get(i + 1);
-                    break;
-                    default:
-                    break;
-                }
-            }
-
-            String nombre = "";
-            String descripcion = "";
-            String version = "";
-            String arquictectura = "";
-            String usuario = "";
-            String directorio = "";
-
-            for (int i = 0; i < dso.infoSO().size(); i += 2) {
-                switch (i + 1) {
-                    case 1:
-                    descripcion = dso.infoSO().get(i + 1);
-                    break;
-                    case 3:
-                    nombre = dso.infoSO().get(i + 1);
-                    break;
-                    case 5:
-                    version = dso.infoSO().get(i + 1);
-                    break;
-                    case 7:
-                    arquictectura = dso.infoSO().get(i + 1);
-                    break;
-                    case 9:
-                    usuario = dso.infoSO().get(i + 1);
-                    break;
-                    case 11:
-                    directorio = dso.infoSO().get(i + 1);
-                    break;
-                    default:
-                    break;
-                }
-            }
-            
-            String espaciototal = "";
-            String espaciolibre = "";
-            String espaciousado = "";
-            String unidades = "";
-
-            for (int i = 0; i < dsc.infoDisco().size(); i += 2) {
-                switch (i + 1) {
-                    case 1:
-                    espaciototal = dsc.infoDisco().get(i + 1);
-                    break;
-                    case 3:
-                    espaciolibre = dsc.infoDisco().get(i + 1);
-                    break;
-                    case 5:
-                    espaciousado = dsc.infoDisco().get(i + 1);
-                    break;
-                    case 7:
-                    unidades = dsc.infoDisco().get(i + 1);
-                    break;
-                    default:
-                    break;
-                }
-            }
-            System.out.println(unidades);
-            String queryDisco = "INSERT INTO `auditoria`.`disco` (`iddisco`,`espaciototal`,`espaciodisponible`,`espaciousado`,`unidades`) VALUES (null,'" + espaciototal + "','" + espaciolibre + "','" + espaciousado + "','" + unidades +"2" +"');";
-            String queryRed = "INSERT INTO `auditoria`.`red` (`idred`,`ip_primaria`,`mac_primaria`,`host`)VALUES(null,'" + ipprimaria + "','" + mac_primaria + "','" + host + "');";
-            String queryCPU = "INSERT INTO `auditoria`.`cpu` (`idcpu`,`vendedor`,`modelo`,`mhz`,`tam_cache`,`cpufisica`,`nucleoscpu`) VALUES (null,'" + vendedor + "','" + modelo + "','" + mhz + "','" + tam_cache + "','" + cpifisca + "','" + nucleoscpi + "');";
-            String querySO = "INSERT INTO `auditoria`.`sistema_operativo` (`idsistema_operativo`,`nombre`,`descripcion`,`version`,`arquitectura`,`usuario`,`directorio`)VALUES(null,'" + nombre + "','" + descripcion + "','" + version + "','" + arquictectura + "','" + usuario + "','" + directorio + "');";
-
-            int idred = conexion.Insertar(queryRed);
-            int iddisco = conexion.Insertar(queryDisco);
-            System.out.println(iddisco);
-            int idcpu = conexion.Insertar(queryCPU);
-            int idso = conexion.Insertar(querySO);
-
-            String queryNuevoEuipo = "INSERT INTO `auditoria`.`audi_equipo` (`idaudi_equipo`,`idauditoria`,`sistema_operativo`,`cpu`,`red_idred`,`disco_iddisco`)VALUES(null," + idauditoria + "," + idso + "," + idcpu + "," + idred + "," + iddisco + ");";
-
-            if (conexion.Insertar(queryNuevoEuipo) > 0) {
-                JOptionPane.showMessageDialog(null, "Equipo registrado con exito");
-            } else {
-                JOptionPane.showMessageDialog(null, "Error, intentalo de nuevo");
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error, intentalo de nuevo");
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        Conexion con = new Conexion();
-        Connection conn = null;
-        JasperReport reporte = null;
-        String path = "src/Reportes/report3.jasper";
-
-        try {
-            int id_auditoria = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese Id Auditoria"));
-            conn = con.getConexion();
-            reporte = (JasperReport) JRLoader.loadObjectFromFile(path);
-            @SuppressWarnings("unchecked")
-            Map<String, Object> parametro = new HashMap();
-            parametro.put("idauditoria", id_auditoria);
-            JasperPrint jprint = JasperFillManager.fillReport(path, parametro, conn);
-            JasperViewer view = new JasperViewer(jprint, false);
-
-            view.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-            view.setVisible(true);
-
-        } catch (JRException ex) {
-            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error al Ingresar Dato");
-        }
-    }//GEN-LAST:event_jButton2ActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel back;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
